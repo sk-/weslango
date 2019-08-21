@@ -188,6 +188,8 @@ func TestAllLanguages(t *testing.T) {
 		fmt.Println("whoops, couldn't create a new LanguageIdentifier:", err)
 	}
 	defer Free(det)
+	// TODO(skreft): reenable tests once the detector can actually detect those
+	// languages.
 	cases := []struct {
 		lang string
 		text string
@@ -316,6 +318,8 @@ func TestAllLanguagesLatin(t *testing.T) {
 		fmt.Println("whoops, couldn't create a new LanguageIdentifier:", err)
 	}
 	defer Free(det)
+	// TODO(skreft): reenable tests once the detector can actually detect those
+	// languages.
 	cases := []struct {
 		lang string
 		text string
