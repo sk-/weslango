@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+package weslango;
+
+service Language {
+  rpc detectLanguage (DetectRequest) returns (DetectResponse) {}
+}
+
+message DetectRequest {
+  // The text we want to detect the language. Ensure that the text is long
+  // enough or otherwise no result will be returned. 
+  string text = 1;
+}
+
+message DetectResponse {
+  // ISO 639-3 code of the detected language.
+  // We use this instead of 639-1 codes, as the underlying library supports some
+  // languages which don't have a two letter representation. 
+  string language = 1;
+  float probability = 2;
+  // This is just the result returned by the underlying library. It is set to
+  // true if the probability is >= 70%, except in case when the detected
+  // language is Croatian or Serbian, in which case the required probability is
+  // just 50%.  
+  bool is_reliable = 3;
+  // Optional. Whether the text was written using the Latin script. This can be
+  // true for those languages that are in a non-Latin script. Currently the only
+  // ones that can have this fiels set to true are: Bulgarian, Chinese, Greek,
+  // Hindi, Japanese and Russian. 
+  bool latin = 4;
+}

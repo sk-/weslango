@@ -1,0 +1,12 @@
+project_url: https://github.com/jmhodges/gocld3
+author: Jeff Hodges
+license: Unknown
+version: ff23652895079d2648fe8574b38801a4c2e2711f
+
+changes:
+  - Removed vendored cld3 dependency
+  - Normalize cld3 response
+  - Added tests
+
+added_files:
+  BUILD.bazel: build rules
