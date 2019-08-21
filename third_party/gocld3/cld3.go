@@ -17,12 +17,7 @@ type LanguageDetector struct {
 	li C.CLanguageIdentifier
 }
 
-var (
-	ErrMaxLessThanOrEqToZero  = errors.New("cld3: maxNumBytes passed to NewLanguageIdentifier must be greater than 0")
-	ErrMinLessThanZero        = errors.New("cld3: minNumBytes passed to NewLanguageIdentifier must be greater than or equal to 0")
-	ErrMaxSmallerOrEqualToMin = errors.New("cld3: maxNumBytes passed to NewLanguageIdentifier must be larger than minNumBytes")
-
-	langCodes = map[string]string{
+var langCodes = map[string]string{
 		"af":  "afr",
 		"am":  "amh",
 		"ar":  "ara",
@@ -127,40 +122,37 @@ var (
 		"zh":  "zho",
 		"zu":  "zul",
 	}
-)
+
+var ErrMaxSmallerOrEqualToMin = errors.New("cld3: maxNumBytes passed to NewLanguageIdentifier must be larger than minNumBytes")
 
 // New returns a LanguageDetector. minNumBytes is the
 // minimum numbers of bytes to consider in the text before making a decision and
 // maxNumBytes is the maximum of the same. Chromium uses 0 and 512, respectively
 // for its i18n work. LanguageIdentifier must be deallocated explicitly with
 // Free.
-// TODO: use uint instead of int
-func NewDetector(minNumBytes, maxNumBytes int) (*LanguageDetector, error) {
+// Note: the cld3 c++ library supports maxNumBytes as large as an int. However,
+// in practice the value used is less than 1000. So we limit the value to an
+// uint16 to avoid any complications when casting the number to int. Note also
+// that 65536 bytes correspond to about 45% of the length of "Romeo and Juliet".
+func NewDetector(minNumBytes, maxNumBytes uint16) (*LanguageDetector, error) {
 	// We do these checks even though they exist in NNetLanguageIdentifier's
 	// constructor because the CLD3_CHECK calls cause inscrutable "illegal
 	// instruction" crashes if they are violated.
-	if maxNumBytes <= 0 {
-		return nil, ErrMaxLessThanOrEqToZero
-	}
-	if minNumBytes < 0 {
-		return nil, ErrMinLessThanZero
-	}
 	if maxNumBytes <= minNumBytes {
 		return nil, ErrMaxSmallerOrEqualToMin
 	}
-	// TODO: check if we can safely convert to int regardless the size
 	return &LanguageDetector{C.new_language_identifier(C.int(minNumBytes), C.int(maxNumBytes))}, nil
-	// TODO maybe user runtime setfinalizer to automatically clean up
 }
 
-// TODO: maje this to set the pointer to nil
 func FreeDetector(li *LanguageDetector) {
 	C.free_language_identifier(li.li)
 }
 
 // FindLanguage detects the language in a given text.
 func (li *LanguageDetector) FindLanguage(text string) Result {
-	// TODO: maybe do the splitting of the text here.
+	// TODO(skreft): consider taking a suffix of the text to avoid allocating too
+	// much memory. This given that the language detector will only use about the
+	// first maxNumBytes.
 	cs := C.CString(text)
 	defer C.free(unsafe.Pointer(cs))
 	res := C.find_language(li.li, cs, C.int(len(text)))

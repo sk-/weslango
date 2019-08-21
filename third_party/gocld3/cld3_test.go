@@ -34,13 +34,11 @@ func TestUnknown(t *testing.T) {
 
 func TestErrors(t *testing.T) {
 	cases := []struct {
-		min int
-		max int
+		min uint16
+		max uint16
 		err error
 	}{
-		{0, 0, ErrMaxLessThanOrEqToZero},
-		{-1, 2, ErrMinLessThanZero},
-		{1, -1, ErrMaxLessThanOrEqToZero},
+		{0, 0, ErrMaxSmallerOrEqualToMin},
 		{2, 1, ErrMaxSmallerOrEqualToMin},
 	}
 	for _, c := range cases {
