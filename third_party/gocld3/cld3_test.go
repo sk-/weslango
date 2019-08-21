@@ -6,11 +6,11 @@ import (
 )
 
 func TestOkay(t *testing.T) {
-	det, err := New(0, 1000)
+	det, err := NewDetector(0, 1000)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer Free(det)
+	defer FreeDetector(det)
 	res := det.FindLanguage("Hey, this is an english sentence")
 	if res.Language != "eng" {
 		t.Errorf("Unexpected language: wanted \"eng\", got %#v", res.Language)
@@ -21,11 +21,11 @@ func TestOkay(t *testing.T) {
 }
 
 func TestUnknown(t *testing.T) {
-	det, err := New(10, 1000)
+	det, err := NewDetector(10, 1000)
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer Free(det)
+	defer FreeDetector(det)
 	res := det.FindLanguage("Hey")
 	if res.Language != "" {
 		t.Errorf("Language was supposed to be unknown, got %#v", res.Language)
@@ -44,7 +44,7 @@ func TestErrors(t *testing.T) {
 		{2, 1, ErrMaxSmallerOrEqualToMin},
 	}
 	for _, c := range cases {
-		_, err := New(c.min, c.max)
+		_, err := NewDetector(c.min, c.max)
 		if err != c.err {
 			t.Errorf("Unexpected error: wanted %s, got %s", c.err, err)
 		}
@@ -52,11 +52,11 @@ func TestErrors(t *testing.T) {
 }
 
 func ExampleBasic() {
-	det, err := New(0, 512)
+	det, err := NewDetector(0, 512)
 	if err != nil {
 		fmt.Println("whoops, couldn't create a new LanguageIdentifier:", err)
 	}
-	defer Free(det)
+	defer FreeDetector(det)
 	res := det.FindLanguage("Hey, this is an english sentence")
 	if res.IsReliable {
 		fmt.Println("pretty sure we've got text written in", res.Language)
@@ -183,11 +183,11 @@ const (
 )
 
 func TestAllLanguages(t *testing.T) {
-	det, err := New(0, 1024)
+	det, err := NewDetector(0, 1024)
 	if err != nil {
 		fmt.Println("whoops, couldn't create a new LanguageIdentifier:", err)
 	}
-	defer Free(det)
+	defer FreeDetector(det)
 	// TODO(skreft): reenable tests once the detector can actually detect those
 	// languages.
 	cases := []struct {
@@ -313,11 +313,11 @@ func TestAllLanguages(t *testing.T) {
 }
 
 func TestAllLanguagesLatin(t *testing.T) {
-	det, err := New(0, 1024)
+	det, err := NewDetector(0, 1024)
 	if err != nil {
 		fmt.Println("whoops, couldn't create a new LanguageIdentifier:", err)
 	}
-	defer Free(det)
+	defer FreeDetector(det)
 	// TODO(skreft): reenable tests once the detector can actually detect those
 	// languages.
 	cases := []struct {

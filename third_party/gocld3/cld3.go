@@ -135,7 +135,7 @@ var (
 // for its i18n work. LanguageIdentifier must be deallocated explicitly with
 // Free.
 // TODO: use uint instead of int
-func New(minNumBytes, maxNumBytes int) (*LanguageDetector, error) {
+func NewDetector(minNumBytes, maxNumBytes int) (*LanguageDetector, error) {
 	// We do these checks even though they exist in NNetLanguageIdentifier's
 	// constructor because the CLD3_CHECK calls cause inscrutable "illegal
 	// instruction" crashes if they are violated.
@@ -154,7 +154,7 @@ func New(minNumBytes, maxNumBytes int) (*LanguageDetector, error) {
 }
 
 // TODO: maje this to set the pointer to nil
-func Free(li *LanguageDetector) {
+func FreeDetector(li *LanguageDetector) {
 	C.free_language_identifier(li.li)
 }
 

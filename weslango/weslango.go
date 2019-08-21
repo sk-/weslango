@@ -21,7 +21,7 @@ type languageServer struct {
 }
 
 func newServer() (*languageServer, error) {
-	det, err := cld3.New(8, 1024)
+	det, err := cld3.NewDetector(8, 1024)
 	if err != nil {
 		return &languageServer{}, err
 	}
