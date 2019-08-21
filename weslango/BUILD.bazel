@@ -1,0 +1,37 @@
+load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library", "go_test")
+load("@io_bazel_rules_go//proto:def.bzl", "go_proto_library")
+
+go_binary(
+    name = "weslango",
+    srcs = ["weslango.go"],
+    deps = [
+        ":weslango_grpc",
+        "//third_party/gocld3",
+        "@org_golang_google_grpc//:go_default_library",
+        "@org_golang_google_grpc//reflection:go_default_library",
+    ],
+)
+
+proto_library(
+    name = "weslango_proto",
+    srcs = ["weslango.proto"],
+)
+
+go_proto_library(
+    name = "weslango_grpc",
+    compilers = ["@io_bazel_rules_go//proto:go_grpc"],
+    importpath = "weslango/proto",
+    proto = ":weslango_proto",
+)
+
+go_test(
+  name = "weslango_test",
+  srcs = ["weslango_test.go",],
+  embed = [":weslango"],
+  deps = [
+    ":weslango_grpc",
+    "@org_golang_google_grpc//:go_default_library",
+    "@org_golang_google_grpc//test/bufconn:go_default_library",
+    ],
+)

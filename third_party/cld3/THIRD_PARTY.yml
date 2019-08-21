@@ -1,0 +1,11 @@
+project_url: https://github.com/google/cld3
+author: Google Inc.
+license: Apache 2.0
+version: 06f695f1c8ee530104416aab5dcf2d6a1414a56a
+
+changes:
+  - Comment out failing tests
+  - Update include path of proto files
+
+added_files:
+  BUILD.bazel: build rules
